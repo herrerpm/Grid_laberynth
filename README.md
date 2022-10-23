@@ -1,1 +1,1 @@
-# Grid_laberynth
+# Grid Laberynth
