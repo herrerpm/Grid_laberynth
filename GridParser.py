@@ -1,20 +1,21 @@
-import numpy as np
-
 class Parser:
     def parse(self):
         file = open(self.path, "r")
         self.dimensions = list(map(int, file.readline().split(" ")))
+        self.dimensions = list(map(lambda x: x-1, self.dimensions))
         self.matrix = []
-        for i in range(self.dimensions[0]):
-            row = list(file.readline())[:-1:]
+        for i in range(self.dimensions[0]+1):
+            row = list(file.readline())
+            if '\n' in row:
+                row = row[:-1:]
             if "A" in row:
-                self.start = np.array([i, row.index("A")])
+                self.start = [i, row.index("A")]
             if "B" in row:
-                self.end = np.array([i, row.index("B")])
+                self.end = [i, row.index("B")]
             self.matrix.append(row)
-        self.matrix = np.array(self.matrix)
 
     def __init__(self, path):
+        self.matrix = None
         self.end = None
         self.start = None
         self.dimensions = None
