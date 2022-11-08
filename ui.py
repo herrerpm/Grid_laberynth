@@ -2,27 +2,32 @@ import pygame
 import time
 from GridParser import Parser
 from main import *
-raiz = Node(parser.start)
-traverse(raiz)
-recorrer(raiz)
-# print(sol(raiz))
-print(solc)
+# raiz = Node(parser.start)
+# traverse(raiz)
+# recorrer(raiz)
+# # print(sol(raiz))
+# print(solc)
+from main import Solver
+
+solver = Solver()
+print(solver.profundidad)
 
 class Square:
     """The square class creates a square on the pygame screen
     with the coordinates provided for its top left corner"""
 
-    def __init__(self, screen, x, y, length, color):
+    def __init__(self, screen, x, y, width, height, color):
         self.screen = screen
         self.color = color
-        self.length = length
+        self.width = width
+        self.heigth =height
         self.x = x
         self.y = y
 
     def create(self):
         """The create method displays the square object to the screen
         after it is initialized"""
-        self.rect = pygame.Rect(self.x, self.y, self.length, self.length)
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.heigth)
         pygame.draw.rect(self.screen, self.color, self.rect)
 
 
@@ -42,9 +47,11 @@ class Grid:
         self.screen = screen
 
     def draw(self):
+        sizex = 900//(parser.dimensions[0]+1)
+        sizey = 600//(parser.dimensions[1]+1)
         for y, i in enumerate(self.matrix):
             for x, j in enumerate(i):
-                Square(self.screen, x*30, y*30, 30, self.colors[j]).create()
+                Square(self.screen, x*sizex, y*sizey, sizex, sizey, self.colors[j]).create()
 
 def run():
     """The run function creates a functional pygame app"""
@@ -55,7 +62,11 @@ def run():
     pygame.display.set_caption("Juego")
     # cuadrado = Square(screen, 0,0,30, (0,0,255))
     parser = Parser("laberinto_3.in")
+    parser2 = Parser("laberinto_3.in")
+    parser3 = Parser("laberinto_3.in")
     grid = Grid(parser.matrix, screen)
+    grid2 = Grid(parser2.matrix, screen)
+    grid3 = Grid(parser3.matrix, screen)
     start = time.time()
 
     def show():
@@ -68,18 +79,32 @@ def run():
         grid.draw()
         pygame.display.flip()
         time.sleep(0.1)
-        for i in plista:
+        for i in solver.profundidad:
             x, y = i
             grid.matrix[x][y] = "2"
             grid.draw()
             time.sleep(0.1)
             pygame.display.flip()
-        # for i in solc:
-        #     x, y = i.data
-        #     grid.matrix[x][y] = "3"
-        #     grid.draw()
-        #     time.sleep(0.1)
-        #     pygame.display.flip()
+        screen.fill([14, 41, 72])
+        grid2.draw()
+        pygame.display.flip()
+        for i in solver.amplitud:
+            x, y = i
+            grid2.matrix[x][y] = "2"
+            grid2.draw()
+            time.sleep(0.1)
+            pygame.display.flip()
+        screen.fill([14, 41, 72])
+        grid3.draw()
+        pygame.display.flip()
+        for i in solver.respuesta:
+            x, y = i.data
+            grid3.matrix[x][y] = "2"
+            grid3.draw()
+            time.sleep(0.1)
+            pygame.display.flip()
+        time.sleep(100)
+        pygame.quit()
 
     def loop():
         """The loop function ensures the window stays open indefinitely until
