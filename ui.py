@@ -61,9 +61,9 @@ def run():
     screen = pygame.display.set_mode((900, 600))
     pygame.display.set_caption("Juego")
     # cuadrado = Square(screen, 0,0,30, (0,0,255))
-    parser = Parser("laberinto_3.in")
-    parser2 = Parser("laberinto_3.in")
-    parser3 = Parser("laberinto_3.in")
+    parser = Parser("laberinto_4.in")
+    parser2 = Parser("laberinto_4.in")
+    parser3 = Parser("laberinto_4.in")
     grid = Grid(parser.matrix, screen)
     grid2 = Grid(parser2.matrix, screen)
     grid3 = Grid(parser3.matrix, screen)
@@ -92,7 +92,7 @@ def run():
             x, y = i
             grid2.matrix[x][y] = "2"
             grid2.draw()
-            time.sleep(0.1)
+            # time.sleep(0.00001)
             pygame.display.flip()
         screen.fill([14, 41, 72])
         grid3.draw()
