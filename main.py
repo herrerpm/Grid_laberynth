@@ -1,10 +1,7 @@
 from GridParser import Parser
 from Arbol import Node
 from collections import deque
-from threading import stack_size
-import sys
-sys.setrecursionlimit(10**6)
-parser = Parser("laberinto_4.in")
+
 
 def arrsum(arr1, arr2):
     arr = []
@@ -12,26 +9,28 @@ def arrsum(arr1, arr2):
         arr.append(arr1[i] + arr2[i])
     return arr
 
+
 def posibilities(start, dimensions):
-    posibilities = (
+    posibility = (
         (0, -1),
         (0, 1),
         (-1, 0),
         (1, 0)
     )
     movements = []
-    for i in posibilities:
-        x,y = arrsum(start, i)
+    for i in posibility:
+        x, y = arrsum(start, i)
         if 0 <= x <= dimensions[0] and 0 <= y <= dimensions[0]:
-            movements.append((x,y))
+            movements.append((x, y))
     return movements
 
 
 class Solver:
 
-    def __init__(self):
+    def __init__(self, path):
+        self.parser = Parser(path)
         self.solucion = None
-        self.raiz = Node(parser.start)
+        self.raiz = Node(self.parser.start)
         self.cache = []
         self.traverse(self.raiz)
         self.profundidad = []
@@ -40,58 +39,29 @@ class Solver:
         self.Profundidad(self.raiz)
         self.Amplitud(self.raiz)
         # print(self.solucion)
-        # self.Solucionn(self.solucion)
-
-
-    # def traverse(self, node):
-    #     posibilities = (
-    #         (0, -1),
-    #         (0, 1),
-    #         (-1, 0),
-    #         (1, 0)
-    #     )
-    #     if node.data in self.cache:
-    #         return
-    #     self.cache.append(node.data)
-    #     for posibility in posibilities:
-    #         x, y = arrsum(node.data, posibility)
-    #         if 0 <= x <= parser.dimensions[0] and 0 <= y <= parser.dimensions[0]:
-    #             if parser.matrix[x][y] == "1":
-    #                 nnode = Node([x, y])
-    #                 node.agregar_hijo(nnode)
-    #                 nnode.padre = node
-    #                 self.traverse(nnode)
-    #             if parser.matrix[x][y] == "B":
-    #                 nnode = Node([x, y])
-    #                 node.agregar_hijo(nnode)
-    #                 nnode.padre = node
-    #                 self.solucion = nnode
-
+        self.Solucionn(self.solucion)
 
     def traverse(self, raiz):
         stack = deque()
         stack.append(raiz)
-        while(stack):
+        while stack:
+            print("Calculando")
             node = stack.popleft()
             if node.data not in self.cache:
                 self.cache.append(node.data)
-                movements = posibilities(node.data, parser.dimensions)
-                print("Nodo",node,movements)
+                movements = posibilities(node.data, self.parser.dimensions)
                 for posibility in movements:
                     x, y = posibility
-                    # print(x,y)
-                    if parser.matrix[x][y] == "1":
+                    if self.parser.matrix[x][y] == "1" and [x,y] not in self.cache:
                         nuevo_nodo = Node([x, y])
                         node.agregar_hijo(nuevo_nodo)
                         nuevo_nodo.padre = node
                         stack.append(nuevo_nodo)
-                    if parser.matrix[x][y] == "B":
+                    if self.parser.matrix[x][y] == "B" and [x,y] not in self.cache:
                         nuevo_nodo = Node([x, y])
                         node.agregar_hijo(nuevo_nodo)
                         nuevo_nodo.padre = node
                         self.solucion = nuevo_nodo
-            else:
-                print("Etsito")
 
     def Profundidad(self, nodo):
         self.profundidad.append(nodo.data)
@@ -114,8 +84,3 @@ class Solver:
                 nodo = nodo.padre
             else:
                 return
-
-
-solver = Solver()
-print(solver.profundidad)
-# print(posibilities((3,3), parser.dimensions))

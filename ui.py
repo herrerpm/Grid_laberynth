@@ -1,16 +1,11 @@
 import pygame
 import time
-from GridParser import Parser
-from main import *
-# raiz = Node(parser.start)
-# traverse(raiz)
-# recorrer(raiz)
-# # print(sol(raiz))
-# print(solc)
-from main import Solver
+from main import Solver, Parser
 
-solver = Solver()
-print(solver.profundidad)
+PATH = "laberinto_4.in"
+
+solver = Solver(PATH)
+parser = Parser(PATH)
 
 class Square:
     """The square class creates a square on the pygame screen
@@ -39,7 +34,8 @@ class Grid:
         "A": (0,255,0),
         "B": (255,0,0),
         "2": (140,70,158),
-        "3": (240, 170, 255)
+        "3": (255, 215, 0),
+        "4": (53, 80, 152)
     }
 
     def __init__(self, matrix, screen):
@@ -60,50 +56,47 @@ def run():
     font = pygame.font.SysFont("C:\Windows\Fonts\Arial", 24)
     screen = pygame.display.set_mode((900, 600))
     pygame.display.set_caption("Juego")
-    # cuadrado = Square(screen, 0,0,30, (0,0,255))
-    parser = Parser("laberinto_4.in")
-    parser2 = Parser("laberinto_4.in")
-    parser3 = Parser("laberinto_4.in")
-    grid = Grid(parser.matrix, screen)
+    parser1 = Parser(PATH)
+    parser2 = Parser(PATH)
+    parser3 = Parser(PATH)
+    delay = 1 * (1 / parser.dimensions[0])
+    print(delay)
+    grid = Grid(parser1.matrix, screen)
     grid2 = Grid(parser2.matrix, screen)
     grid3 = Grid(parser3.matrix, screen)
-    start = time.time()
 
     def show():
         """The show function handles the pieces that will be displayed
         to the screen and continuously update in the loop method"""
-        nonlocal start
-        delta = time.time() - start
-        start = time.time()
         screen.fill([14, 41, 72])
         grid.draw()
         pygame.display.flip()
-        time.sleep(0.1)
         for i in solver.profundidad:
             x, y = i
             grid.matrix[x][y] = "2"
             grid.draw()
-            time.sleep(0.1)
+            time.sleep(delay)
             pygame.display.flip()
         screen.fill([14, 41, 72])
         grid2.draw()
         pygame.display.flip()
         for i in solver.amplitud:
             x, y = i
-            grid2.matrix[x][y] = "2"
+            grid2.matrix[x][y] = "4"
             grid2.draw()
-            # time.sleep(0.00001)
+            time.sleep(delay)
             pygame.display.flip()
         screen.fill([14, 41, 72])
         grid3.draw()
         pygame.display.flip()
-        for i in solver.respuesta:
+        print(solver.respuesta)
+        for i in solver.respuesta[::-1]:
             x, y = i.data
-            grid3.matrix[x][y] = "2"
+            grid3.matrix[x][y] = "3"
             grid3.draw()
-            time.sleep(0.1)
+            time.sleep(delay)
             pygame.display.flip()
-        time.sleep(100)
+        time.sleep(10)
         pygame.quit()
 
     def loop():
